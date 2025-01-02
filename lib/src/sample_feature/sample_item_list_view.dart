@@ -5,15 +5,17 @@ import 'sample_item.dart';
 import 'sample_item_details_view.dart';
 
 /// Displays a list of SampleItems.
-class SampleItemListView extends StatelessWidget {
-  const SampleItemListView({
-    super.key,
-    this.items = const [SampleItem(1), SampleItem(2), SampleItem(3)],
-  });
+class SampleItemListView extends StatefulWidget {
+  const SampleItemListView({ super.key });
 
   static const routeName = '/';
 
-  final List<SampleItem> items;
+  @override
+  State<SampleItemListView> createState() => _SampleItemListViewState();
+}
+
+class _SampleItemListViewState extends State<SampleItemListView> {
+  List<SampleItem> items = <SampleItem>[];
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,15 @@ class SampleItemListView extends StatelessWidget {
           );
         },
       ),
+
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          setState(() => items.add(SampleItem(items.length + 1)));
+        },
+        label: const Text('Scan receipt'),
+        icon: const Icon(Icons.camera_alt_outlined),
+      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
