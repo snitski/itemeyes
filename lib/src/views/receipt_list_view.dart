@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import '../settings/settings_view.dart';
-import 'sample_item.dart';
-import 'sample_item_details_view.dart';
+import '../data/receipt.dart';
+import 'receipt_details_view.dart';
 
 /// Displays a list of SampleItems.
-class SampleItemListView extends StatefulWidget {
-  const SampleItemListView({ super.key });
+class ReceiptListView extends StatefulWidget {
+  const ReceiptListView({ super.key });
 
   static const routeName = '/';
 
   @override
-  State<SampleItemListView> createState() => _SampleItemListViewState();
+  State<ReceiptListView> createState() => _ReceiptListViewState();
 }
 
-class _SampleItemListViewState extends State<SampleItemListView> {
-  List<SampleItem> items = <SampleItem>[];
+class _ReceiptListViewState extends State<ReceiptListView> {
+  List<Receipt> receipts = <Receipt>[];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sample Items'),
+        title: const Text('Scanned Receipts'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -45,13 +47,13 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         // Providing a restorationId allows the ListView to restore the
         // scroll position when a user leaves and returns to the app after it
         // has been killed while running in the background.
-        restorationId: 'sampleItemListView',
-        itemCount: items.length,
+        restorationId: 'receiptListView',
+        itemCount: receipts.length,
         itemBuilder: (BuildContext context, int index) {
-          final item = items[index];
+          final receipt = receipts[index];
 
           return ListTile(
-            title: Text('SampleItem ${item.id}'),
+            title: Text('Receipt ${receipt.id}'),
             leading: const CircleAvatar(
               // Display the Flutter Logo image asset.
               foregroundImage: AssetImage('assets/images/flutter_logo.png'),
@@ -60,9 +62,10 @@ class _SampleItemListViewState extends State<SampleItemListView> {
               // Navigate to the details page. If the user leaves and returns to
               // the app after it has been killed while running in the
               // background, the navigation stack is restored.
-              Navigator.restorablePushNamed(
+              Navigator.pushNamed(
                 context,
-                SampleItemDetailsView.routeName,
+                ReceiptDetailsView.routeName,
+                arguments: receipt,
               );
             }
           );
@@ -70,8 +73,39 @@ class _SampleItemListViewState extends State<SampleItemListView> {
       ),
 
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          setState(() => items.add(SampleItem(items.length + 1)));
+        onPressed: () async {
+          ImageSource? imageSource = await showDialog(context: context,
+            builder: (BuildContext context) => SimpleDialog(
+              title: const Text('Scan receipt'),
+              children: [
+                SimpleDialogOption(
+                  onPressed: () => Navigator.pop(context, ImageSource.camera),
+                  child: const Text('Camera'),
+                ),
+                SimpleDialogOption(
+                  onPressed: () => Navigator.pop(context, ImageSource.gallery),
+                  child: const Text('Gallery'),
+                ),
+              ],
+            )
+          );
+          if (imageSource == null) return;
+
+          final image = await ImagePicker().pickImage(source: imageSource);
+          if (image == null) return;
+
+          if(!context.mounted) return;
+          final croppedImage = await ImageCropper().cropImage(
+            sourcePath: image.path,
+            uiSettings: [AndroidUiSettings(hideBottomControls: true,
+                                           lockAspectRatio: false,
+            )]);
+
+          if (croppedImage == null) return;
+
+          final receipt = Receipt(receipts.length + 1, croppedImage);
+          await receipt.parseReceipt();
+          setState(() => receipts.insert(0, receipt));
         },
         label: const Text('Scan receipt'),
         icon: const Icon(Icons.camera_alt_outlined),
