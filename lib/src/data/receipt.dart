@@ -12,6 +12,13 @@ class Receipt {
   final int id;
   final CroppedFile image;
 
+  Set<String> people = <String>{
+    'Alex',
+    'Bob',
+    'Charlie',
+    'Arty',
+  };
+
   List<ReceiptItem> items = <ReceiptItem>[];
   double tip = 0.00;
   double tax = 0.00;

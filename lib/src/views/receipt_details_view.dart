@@ -44,7 +44,11 @@ class ReceiptDetailsView extends StatelessWidget {
       body: ListView.builder(
         itemCount: receipt.items.length,
         itemBuilder: (BuildContext context, int index) {
-          return ReceiptItemView(receiptItem: receipt.items[index]);
+          return ReceiptItemView(
+            receiptItem: receipt.items[index],
+            allPeople: receipt.people,
+            onDelete: () => receipt.items.removeAt(index), // Will have to turn into a stateful widget to update the UI
+          );
         },
       ),
       bottomNavigationBar: Padding(
