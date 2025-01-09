@@ -1,29 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:itemeyes/src/components/linked_textfield.dart';
 import 'package:itemeyes/src/data/receipt.dart';
 import 'package:itemeyes/src/views/receipt_item_view.dart';
 
 /// Displays detailed information about a SampleItem.
 class ReceiptDetailsView extends StatelessWidget {
   static const String routeName = '/receipt';
-
-  static Widget _createTextField(TextEditingController controller, bool isDollar, {void Function(String)? submitFunction}) {
-    RegExp inputFilter = RegExp(isDollar ? r'^\d+\.?\d{0,2}$' : r'^\d+\.?\d{0,4}$');
-    return Expanded(
-      child: TextField(
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.allow(inputFilter)],
-        controller: controller,
-        decoration: InputDecoration(
-          prefixText: isDollar ? '\$' : '',
-          suffixText: isDollar ? '' : '%',
-          border: UnderlineInputBorder(),
-          isCollapsed: true,
-        ),
-        onSubmitted: submitFunction,
-      ),
-    );
-  }
+  static const String dollarFilter = r'^\d+\.?\d{0,2}$';
+  static const String percentFilter = r'^\d+\.?\d{0,4}$';
+  static const String dollarPrefix = '\$';
+  static const String percentSuffix = '%';
 
   const ReceiptDetailsView({ super.key });
 
@@ -68,28 +54,48 @@ class ReceiptDetailsView extends StatelessWidget {
                   spacing: 8,
                   children: [
                     Text('Tax:'),
-                    _createTextField(taxDollarController, true, submitFunction: (String value) {
-                      receipt.tax = double.parse(value);
-                      taxPercentController.text = receipt.calculateTaxPercentage().toStringAsFixed(3);
-                    }),
-                    _createTextField(taxPercentController, false, submitFunction: (String value) {
-                      receipt.tax = receipt.calculateTax(double.parse(value));
-                      taxDollarController.text = receipt.tax.toStringAsFixed(2);
-                    }),
+                    LinkedTextField(
+                      textController: taxDollarController,
+                      inputFilter: RegExp(dollarFilter),
+                      prefixText: dollarPrefix,
+                      submitFunction: (String value) {
+                        receipt.tax = double.parse(value);
+                        taxPercentController.text = receipt.calculateTaxPercentage().toStringAsFixed(3);
+                      }
+                    ),
+                    LinkedTextField(
+                      textController: taxPercentController,
+                      inputFilter: RegExp(percentFilter),
+                      suffixText: percentSuffix,
+                      submitFunction: (String value) {
+                        receipt.tax = receipt.calculateTax(double.parse(value));
+                        taxDollarController.text = receipt.tax.toStringAsFixed(2);
+                      }
+                    ),
                   ],
                 ),
                 Row(
                   spacing: 8,
                   children: [
                     Text('Tip:'),
-                    _createTextField(tipDollarController, true, submitFunction: (String value) {
-                      receipt.tip = double.parse(value);
-                      tipPercentController.text = receipt.calculateTipPercentage().toStringAsFixed(0);
-                    }),
-                    _createTextField(tipPercentController, false, submitFunction: (String value) {
-                      receipt.tip = receipt.calculateTip(double.parse(value));
-                      tipDollarController.text = receipt.tip.toStringAsFixed(2);
-                    }),
+                    LinkedTextField(
+                      textController: tipDollarController,
+                      inputFilter: RegExp(dollarFilter),
+                      prefixText: dollarPrefix,
+                      submitFunction: (String value) {
+                        receipt.tip = double.parse(value);
+                        tipPercentController.text = receipt.calculateTipPercentage().toStringAsFixed(0);
+                      }
+                    ),
+                    LinkedTextField(
+                      textController: tipPercentController,
+                      inputFilter: RegExp(percentFilter),
+                      suffixText: percentSuffix,
+                      submitFunction: (String value) {
+                        receipt.tip = receipt.calculateTip(double.parse(value));
+                        tipDollarController.text = receipt.tip.toStringAsFixed(2);
+                      }
+                    ),
                   ],
                 ),
               ],
