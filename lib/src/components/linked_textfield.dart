@@ -35,6 +35,9 @@ class _LinkedTextFieldState extends State<LinkedTextField>{
           isCollapsed: true,
         ),
         onSubmitted: widget.submitFunction,
+        onTapOutside: (PointerDownEvent event) {
+          FocusScope.of(context).unfocus();
+        },
       ),
     );
   }
