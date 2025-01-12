@@ -5,10 +5,7 @@ class ReceiptItem {
   final String name;
   final double price;
 
-  Set<String> people = <String>{
-    'Alex',
-    'Arty',
-  };
+  Set<String> people = {};
 
   @override
   String toString() {
