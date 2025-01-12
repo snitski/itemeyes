@@ -1,12 +1,7 @@
 class ReceiptItem {
   ReceiptItem(this.name, this.price);
-  final String name;
-  final double price;
+  String name;
+  double price;
 
   Set<String> people = {};
-
-  @override
-  String toString() {
-    return '$name: \$${price.toStringAsFixed(2)}';
-  }
 }
