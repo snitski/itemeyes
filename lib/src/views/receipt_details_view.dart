@@ -67,7 +67,6 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
                     children: [
                       Text('Tax:'),
                       LinkedTextField(
-                        key: Key('taxDollar'),
                         textController: taxDollarController,
                         inputFilter: RegExp(ReceiptDetailsView.dollarFilter),
                         prefixText: ReceiptDetailsView.dollarPrefix,
@@ -77,7 +76,6 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
                         }
                       ),
                       LinkedTextField(
-                        key: Key('taxPercent'),
                         textController: taxPercentController,
                         inputFilter: RegExp(ReceiptDetailsView.percentFilter),
                         suffixText: ReceiptDetailsView.percentSuffix,
@@ -93,7 +91,6 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
                     children: [
                       Text('Tip:'),
                       LinkedTextField(
-                        key: Key('tipDollar'),
                         textController: tipDollarController,
                         inputFilter: RegExp(ReceiptDetailsView.dollarFilter),
                         prefixText: ReceiptDetailsView.dollarPrefix,
@@ -103,7 +100,6 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
                         }
                       ),
                       LinkedTextField(
-                        key: Key('tipPercent'),
                         textController: tipPercentController,
                         inputFilter: RegExp(ReceiptDetailsView.percentFilter),
                         suffixText: ReceiptDetailsView.percentSuffix,
