@@ -7,13 +7,7 @@ class Receipt {
   static final String taxItem = 'Tax';
   static final String tipItem = 'Tip';
 
-  Receipt(this.id, this.image);
-
-  final int id;
-  final CroppedFile image;
-
   Set<String> people = {};
-
   List<ReceiptItem> items = <ReceiptItem>[];
   double tip = 0.00;
   double tax = 0.00;
@@ -44,14 +38,14 @@ class Receipt {
     return tip / getSubtotal() * 100;
   }
 
-  Future<void> parseReceipt() async {
-    final List<String> lines = await _getLinesFromImage();
+  Future<void> parseImage(CroppedFile image) async {
+    final List<String> lines = await _getLinesFromImage(image);
 
-    RegExp pricePattern = RegExp(r'^\$?\s*\d+\.\d{2}$');
-    RegExp totalPattern = RegExp(r'^[Tt][Oo][Tt][Aa][Ll]$');
-    RegExp subtotalPattern = RegExp(r'^[Ss][Uu][Bb][Tt][Oo][Tt][Aa][Ll]$');
-    RegExp taxPattern = RegExp(r'[Tt][Aa][Xx]$');
-    RegExp tipPattern = RegExp(r'^[Tt][Ii][Pp]$');
+    final RegExp pricePattern = RegExp(r'^\$?\s*\d+\.\d{2}$');
+    final RegExp totalPattern = RegExp(r'^[Tt][Oo][Tt][Aa][Ll]$');
+    final RegExp subtotalPattern = RegExp(r'^[Ss][Uu][Bb][Tt][Oo][Tt][Aa][Ll]$');
+    final RegExp taxPattern = RegExp(r'[Tt][Aa][Xx]$');
+    final RegExp tipPattern = RegExp(r'^[Tt][Ii][Pp]$');
 
     List<String> itemList = <String>[];
     List<double> priceList = <double>[];
@@ -101,7 +95,7 @@ class Receipt {
     _buildItemList(itemList, priceList);
   }
 
-  Future<List<String>> _getLinesFromImage() async {
+  Future<List<String>> _getLinesFromImage(CroppedFile image) async {
     final TextRecognizer textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
     final InputImage inputImage = InputImage.fromFilePath(image.path);
     final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
@@ -139,17 +133,5 @@ class Receipt {
       itemIndex++;
       priceIndex++;
     }
-  }
-
-  @override
-  String toString() {
-    String result = 'Receipt $id\n';
-    double total = 0;
-    for (final ReceiptItem item in items) {
-      result += '$item\n';
-      total += item.price;
-    }
-    result += 'Total: ${total.toStringAsFixed(2)}';
-    return result;
   }
 }

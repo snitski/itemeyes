@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:itemeyes/src/components/linked_textfield.dart';
 import 'package:itemeyes/src/data/receipt.dart';
-import 'package:itemeyes/src/views/receipt_item_view.dart';
+import 'package:itemeyes/src/components/receipt_item_view.dart';
 
-/// Displays detailed information about a SampleItem.
 class ReceiptDetailsView extends StatefulWidget {
   static const String routeName = '/receipt';
   static const String dollarFilter = r'^\d+\.?\d{0,2}$';
@@ -20,11 +20,11 @@ class ReceiptDetailsView extends StatefulWidget {
 class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
   late Receipt receipt;
 
-  TextEditingController taxDollarController = TextEditingController();
-  TextEditingController taxPercentController = TextEditingController();
+  final TextEditingController taxDollarController = TextEditingController();
+  final TextEditingController taxPercentController = TextEditingController();
 
-  TextEditingController tipDollarController = TextEditingController();
-  TextEditingController tipPercentController = TextEditingController();
+  final TextEditingController tipDollarController = TextEditingController();
+  final TextEditingController tipPercentController = TextEditingController();
 
   @override
   void dispose() {
@@ -52,7 +52,7 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
           IconButton(
             icon: const Icon(Icons.person_add_alt_1),
             onPressed: () async {
-              final result = await showDialog(
+              final String? name = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return SimpleDialog(
@@ -66,9 +66,7 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
                             labelText: 'Name',
                             border: OutlineInputBorder(),
                           ),
-                          onSubmitted: (String value) {
-                            Navigator.pop(context, value);
-                          },
+                          onSubmitted: (String value) => Navigator.pop(context, value),
                         ),
                       )
                     ],
@@ -76,10 +74,8 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
                 }
               );
 
-              if (result is String && result.isNotEmpty) {
-                setState(() {
-                  receipt.people.add(result);
-                });
+              if (name is String && name.isNotEmpty) {
+                setState(() => receipt.people.add(name));
               }
             },
           ),

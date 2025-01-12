@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:itemeyes/src/data/receipt_item.dart';
 
 class ReceiptItemView extends StatefulWidget {
@@ -33,22 +34,18 @@ class _ReceiptItemViewState extends State<ReceiptItemView> {
           scrollDirection: Axis.horizontal,
           itemCount: widget.allPeople.length,
           itemBuilder: (BuildContext context, int index) {
-            String name = widget.allPeople.elementAt(index);
-            String initials = name.split(' ').map((String word) => word[0]).join();
+            final String name = widget.allPeople.elementAt(index);
+            final String initials = name.split(' ').map((String word) => word[0]).join();
 
             if (widget.receiptItem.people.contains(name)) {
               return IconButton.filledTonal(
                 icon: Text(initials),
-                onPressed: () => setState(() {
-                  widget.receiptItem.people.remove(name);
-                })
+                onPressed: () => setState(() => widget.receiptItem.people.remove(name))
               );
             } else {
               return IconButton.outlined(
                 icon: Text(initials),
-                onPressed: () => setState(() {
-                  widget.receiptItem.people.add(name);
-                })
+                onPressed: () => setState(() => widget.receiptItem.people.add(name))
               );
             }
           },
