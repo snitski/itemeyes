@@ -48,6 +48,42 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Receipt Details'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_add_alt_1),
+            onPressed: () async {
+              final result = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SimpleDialog(
+                    title: const Text('Add Person'),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        child: TextField(
+                          autofocus: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          onSubmitted: (String value) {
+                            Navigator.pop(context, value);
+                          },
+                        ),
+                      )
+                    ],
+                  );
+                }
+              );
+
+              if (result is String && result.isNotEmpty) {
+                setState(() {
+                  receipt.people.add(result);
+                });
+              }
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
