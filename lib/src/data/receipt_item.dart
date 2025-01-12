@@ -1,5 +1,3 @@
-import 'package:itemeyes/src/data/person.dart';
-
 class ReceiptItem {
   ReceiptItem(this.name, this.price);
   final String name;
