@@ -41,8 +41,8 @@ class _ReceiptItemViewState extends State<ReceiptItemView> {
             final String initials = name.split(' ').map((String word) => word[0]).join();
 
             if (widget.receiptItem.people.contains(name)) {
-              return IconButton.filledTonal(
-                icon: Text(initials),
+              return IconButton.filled(
+                icon: Text(initials, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
                 onPressed: () => setState(() => widget.receiptItem.people.remove(name))
               );
             } else {
