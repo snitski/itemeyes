@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:itemeyes/src/components/linked_textfield.dart';
+import 'package:itemeyes/src/components/receipt_item_dialog_fields.dart';
 import 'package:itemeyes/src/data/receipt.dart';
+import 'package:itemeyes/src/data/receipt_item.dart';
 import 'package:itemeyes/src/components/receipt_item_view.dart';
 
 class ReceiptDetailsView extends StatefulWidget {
@@ -19,6 +21,9 @@ class ReceiptDetailsView extends StatefulWidget {
 
 class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
   late Receipt receipt;
+
+  final TextEditingController dialogNameController = TextEditingController();
+  final TextEditingController dialogPriceController = TextEditingController();
 
   final TextEditingController taxDollarController = TextEditingController();
   final TextEditingController taxPercentController = TextEditingController();
@@ -48,38 +53,6 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Receipt Details'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_add_alt_1),
-            onPressed: () async {
-              final String? name = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return SimpleDialog(
-                    title: const Text('Add Person'),
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        child: TextField(
-                          autofocus: true,
-                          decoration: const InputDecoration(
-                            labelText: 'Name',
-                            border: OutlineInputBorder(),
-                          ),
-                          onSubmitted: (String value) => Navigator.pop(context, value),
-                        ),
-                      )
-                    ],
-                  );
-                }
-              );
-
-              if (name is String && name.isNotEmpty) {
-                setState(() => receipt.people.add(name));
-              }
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -161,6 +134,101 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
           ),
         ],
       ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 16,
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.person_add_alt_1),
+                label: const Text('Add Person'),
+                onPressed: () async {
+                  final String? name = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      dialogNameController.clear();
+
+                      return AlertDialog(
+                        title: const Text('Add Person'),
+                        content: TextField(
+                          autofocus: true,
+                          textCapitalization: TextCapitalization.words,
+                          controller: dialogNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          onSubmitted: (String value) => Navigator.pop(context, value)
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, dialogNameController.text);
+                            },
+                            child: const Text('Add'),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+
+                  if (name is String && name.isNotEmpty) {
+                    setState(() => receipt.people.add(name));
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.playlist_add),
+                label: const Text('Add Item'),
+                onPressed: () async {
+                  final ReceiptItem? item = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      dialogNameController.clear();
+                      dialogPriceController.clear();
+
+                      return AlertDialog(
+                        title: const Text('Add Item'),
+                        content: ReceiptItemDialogFields(
+                          nameController: dialogNameController,
+                          priceController: dialogPriceController
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              final String name = dialogNameController.text;
+                              final double price = double.parse(dialogPriceController.text);
+
+                              Navigator.pop(context, ReceiptItem(name, price));
+                            },
+                            child: const Text('Add'),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+
+                  if (item is ReceiptItem) {
+                    setState(() => receipt.items.add(item));
+                  }
+                },
+              ),
+            ),
+          ]
+        ),
+      )
     );
   }
 }

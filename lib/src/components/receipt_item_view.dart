@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:itemeyes/src/components/receipt_item_dialog_fields.dart';
 
 import 'package:itemeyes/src/data/receipt_item.dart';
 
@@ -66,23 +66,9 @@ class _ReceiptItemViewState extends State<ReceiptItemView> {
               canPop: false,
               child: AlertDialog(
                 title: const Text('Edit Item'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Item Name'),
-                    ),
-                    TextField(
-                      controller: priceController,
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}$'))],
-                      decoration: const InputDecoration(
-                        prefix: Text('\$'),
-                        labelText: 'Price'
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                  ],
+                content: ReceiptItemDialogFields(
+                  nameController: nameController,
+                  priceController: priceController
                 ),
                 actions: [
                   TextButton(
