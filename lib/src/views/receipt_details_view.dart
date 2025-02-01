@@ -5,6 +5,8 @@ import 'package:itemeyes/src/components/receipt_item_dialog_fields.dart';
 import 'package:itemeyes/src/data/receipt.dart';
 import 'package:itemeyes/src/data/receipt_item.dart';
 import 'package:itemeyes/src/components/receipt_item_view.dart';
+import 'package:itemeyes/src/views/receipt_split_view.dart';
+
 
 class ReceiptDetailsView extends StatefulWidget {
   static const String routeName = '/receipt';
@@ -57,15 +59,32 @@ class _ReceiptDetailsViewState extends State<ReceiptDetailsView> {
       body: Column(
         children: [
           Card(
+            margin: const EdgeInsets.all(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Column(
                 spacing: 8,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Total: \$${(receipt.getSubtotal() + receipt.tip + receipt.tax).toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.headlineSmall,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Total: \$${(receipt.getSubtotal() + receipt.tip + receipt.tax).toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      FilledButton.icon(
+                        icon: const Icon(Icons.group),
+                        label: const Text('Split'),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            ReceiptSplitView.routeName,
+                            arguments: receipt,
+                          );
+                        },
+                      )
+                    ],
                   ),
                   Row(
                     spacing: 8,

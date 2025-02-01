@@ -6,6 +6,7 @@ import 'package:itemeyes/src/views/receipt_details_view.dart';
 import 'package:itemeyes/src/views/receipt_list_view.dart';
 import 'package:itemeyes/src/settings/settings_controller.dart';
 import 'package:itemeyes/src/settings/settings_view.dart';
+import 'package:itemeyes/src/views/receipt_split_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -45,6 +46,8 @@ class MyApp extends StatelessWidget {
                     return SettingsView(controller: settingsController);
                   case ReceiptDetailsView.routeName:
                     return const ReceiptDetailsView();
+                  case ReceiptSplitView.routeName:
+                    return const ReceiptSplitView();
                   case ReceiptListView.routeName:
                   default:
                     return const ReceiptListView();

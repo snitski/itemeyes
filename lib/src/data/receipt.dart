@@ -95,6 +95,23 @@ class Receipt {
     _buildItemList(itemList, priceList);
   }
 
+  Map<String, double> splitItems() {
+    Map<String, double> splitItems = <String, double>{};
+
+    for (final String person in people) {
+      splitItems[person] = 0.0;
+    }
+
+    for (final ReceiptItem item in items) {
+      final double splitPrice = item.price / item.people.length;
+
+      for (final String person in item.people) {
+        splitItems[person] = splitItems[person]! + splitPrice;
+      }
+    }
+    return splitItems;
+  }
+
   Future<List<String>> _getLinesFromImage(CroppedFile image) async {
     final TextRecognizer textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
     final InputImage inputImage = InputImage.fromFilePath(image.path);
