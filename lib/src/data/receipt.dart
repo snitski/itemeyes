@@ -7,6 +7,9 @@ class Receipt {
   static final String taxItem = 'Tax';
   static final String tipItem = 'Tip';
 
+  Receipt({required this.id});
+  final int id;
+
   Set<String> people = {};
   List<ReceiptItem> items = <ReceiptItem>[];
   double tip = 0.00;

@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:itemeyes/src/app.dart';
 import 'package:itemeyes/src/settings/settings_controller.dart';
 import 'package:itemeyes/src/settings/settings_service.dart';
+import 'package:itemeyes/src/data/database_helper.dart';
 
 void main() async {
+
+  // Avoid errors caused by flutter upgrade.
+  // Importing 'package:flutter/widgets.dart' is required.
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize database
+  await DatabaseHelper().database;
+
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   final settingsController = SettingsController(SettingsService());

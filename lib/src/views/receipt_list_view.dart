@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'package:itemeyes/src/settings/settings_view.dart';
 import 'package:itemeyes/src/data/receipt.dart';
+import 'package:itemeyes/src/data/database_helper.dart';
 import 'package:itemeyes/src/views/receipt_details_view.dart';
 
 /// Displays a list of SampleItems.
 class ReceiptListView extends StatefulWidget {
-  const ReceiptListView({ super.key });
-
   static const routeName = '/';
+
+  const ReceiptListView({ super.key });
 
   @override
   State<ReceiptListView> createState() => _ReceiptListViewState();
@@ -18,6 +20,23 @@ class ReceiptListView extends StatefulWidget {
 
 class _ReceiptListViewState extends State<ReceiptListView> {
   List<Receipt> receipts = <Receipt>[];
+  late Database db;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReceipts();
+  }
+
+  Future<void> _loadReceipts() async {
+    db = await DatabaseHelper().database;
+    final List<Map<String, dynamic>> receiptMaps = await db.query('Receipts');
+    setState(() {
+      receipts = List.generate(receiptMaps.length, (i) {
+        return Receipt(id: receiptMaps[i]['id']);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +110,13 @@ class _ReceiptListViewState extends State<ReceiptListView> {
 
           if (croppedImage == null) return;
 
-          final receipt = Receipt();
-          await receipt.parseImage(croppedImage);
+          // final receipt = Receipt();
+          // await receipt.parseImage(croppedImage);
+
+          final id = await db.insert('Receipts', <String, dynamic>{
+            'date': DateTime.now().toIso8601String(),
+          });
+
           setState(() => receipts.insert(0, receipt));
         },
         label: const Text('Scan receipt'),
